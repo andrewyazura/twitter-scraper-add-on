@@ -1,6 +1,6 @@
 setTimeout(() => {
   let followers = document
-    .querySelector('div[aria-label="Timeline: Followers"]')
+    .querySelector("div.css-1dbjc4n")
     .querySelector("div").children;
 
   console.log(followers);
