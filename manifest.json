@@ -10,5 +10,5 @@
   "background": {
     "scripts": ["background-script.js"]
   },
-  "permissions": ["https://twitter.com/*", "cookies", "tabs"]
+  "permissions": ["https://twitter.com/*", "storage", "tabs"]
 }

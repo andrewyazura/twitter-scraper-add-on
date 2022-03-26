@@ -9,9 +9,12 @@ function get_exports() {
   }
 
   // access window object of background.js script and execute export_user_data function
-  browser.runtime.getBackgroundPage().then((background_window) => {
-    background_window.export_user_data(exports);
-  });
+  browser.runtime
+    .getBackgroundPage()
+    .then((background_window) => {
+      background_window.export_user_data(exports);
+    })
+    .catch(console.error);
 }
 
 document.getElementById("submit").addEventListener("click", get_exports);
