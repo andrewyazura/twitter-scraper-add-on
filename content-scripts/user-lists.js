@@ -22,40 +22,41 @@ function get_username(url) {
   return new URL(url).pathname.split("/")[1];
 }
 
-function get_following() {
+function get_user_elements() {
   return document
     .querySelector("section.css-1dbjc4n")
     .querySelector("div.css-1dbjc4n")
     .querySelector("div").children;
 }
 
-function save_following(following) {
-  console.log(following);
+function save_data(usernames) {
+  console.log(usernames);
 }
 
+var type = window.location.pathname.split("/")[2];
 var username = get_username(window.location);
 
 browser.storage.local.get(username).then((result) => {
-  let following_count = result[username]["following"];
+  let followers_count = result[username][type];
 
   wait_for_element("section.css-1dbjc4n").then((element) => {
-    let following = new Set();
+    let usernames = new Set();
 
     let interval = setInterval(() => {
-      let following_elements = get_following();
+      let user_elements = get_user_elements();
 
-      for (const element of following_elements) {
+      for (const element of user_elements) {
         let link = element.querySelector("a");
         if (!link) continue;
 
-        following.add(get_username(link.href));
+        usernames.add(get_username(link.href));
       }
 
       window.scrollTo(0, document.body.scrollHeight);
 
-      if (following.size >= following_count) {
+      if (usernames.size >= followers_count) {
         clearInterval(interval);
-        save_following(following);
+        save_data(usernames);
       }
     }, 1000);
   });

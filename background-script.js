@@ -12,19 +12,22 @@ function export_user_data(params) {
         file: "/content-scripts/profile.js",
       });
 
-      params.forEach((element) => {
-        // retweets are not implemented yet
-        if (element == "retweets") return;
-
-        browser.tabs
-          .create({ url: get_twitter_url(username, element) })
-          .then((tab) => {
-            browser.tabs.executeScript(tab.id, {
-              file: `/content-scripts/${element}.js`,
-            });
-          })
-          .catch(console.error);
-      });
+      for (const type of params) {
+        if (type == "following" || type == "followers") {
+          browser.tabs
+            .create({ url: get_twitter_url(username, element) })
+            .then((tab) => {
+              browser.tabs.executeScript(tab.id, {
+                file: `/content-scripts/user-lists.js`,
+              });
+            })
+            .catch(console.error);
+        } else if (type == "retweets") {
+          console.warn("retweets are not implemented yet");
+        } else {
+          console.warn("unknown type:", type);
+        }
+      }
     })
     .catch(console.error);
 }
