@@ -30,14 +30,21 @@ function get_user_elements() {
 }
 
 function save_data(usernames) {
-  console.log(usernames);
+  browser.storage.local.get(username).then((result) => {
+    browser.storage.local.set({
+      [username]: {
+        ...result[username],
+        [type]: Array.from(usernames),
+      },
+    });
+  });
 }
 
 var type = window.location.pathname.split("/")[2];
 var username = get_username(window.location);
 
 browser.storage.local.get(username).then((result) => {
-  let followers_count = result[username][type];
+  let count = result[username][type];
 
   wait_for_element("section.css-1dbjc4n").then((element) => {
     let usernames = new Set();
@@ -54,7 +61,7 @@ browser.storage.local.get(username).then((result) => {
 
       window.scrollTo(0, document.body.scrollHeight);
 
-      if (usernames.size >= followers_count) {
+      if (usernames.size >= count) {
         clearInterval(interval);
         save_data(usernames);
       }
