@@ -30,6 +30,12 @@ Use `./wslexport /path/to/export`. For example: `/mnt/c/Users/<username>/Documen
 
 Alternatively, set `ADDONEXPORTPATH` environment variable to path where you want to export the files to. Then use `./wslexport.sh`.
 
+#### Nodemon
+
+You can use `nodemon` to automatically execute `wslexport.sh` script on file changes:
+
+`npx nodemon --watch . --ext js,json,html,css --exec ./wslexport.sh`
+
 ### Formatting
 
 Use [**Prettier**](https://prettier.io/) for formatting your code.
