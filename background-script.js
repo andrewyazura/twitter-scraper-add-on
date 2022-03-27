@@ -1,26 +1,26 @@
 // this function is used by popup.js
-function export_current_user_data(params, export_params) {
+function export_current_user_data(settings) {
   browser.tabs
     .query({ currentWindow: true, active: true })
     .then((tabs) => {
-      if (params.includes("overwrite-cache")) {
+      if (settings["overwrite-cache"]) {
         browser.storage.local
           .clear()
           .then(() => {
-            export_user_data(tabs[0], export_params);
+            export_user_data(tabs[0], settings["connection-types"]);
           })
           .catch(console.error);
       } else {
-        export_user_data(tabs[0], export_params);
+        export_user_data(tabs[0], settings["connection-types"]);
       }
     })
     .catch(console.error);
 }
 
-function export_user_data(user_tab, export_params) {
+function export_user_data(user_tab, connection_types) {
   let username = get_username(user_tab.url);
 
-  for (const type of export_params) {
+  for (const type of connection_types) {
     if (type == "following" || type == "followers") {
       browser.storage.local
         .get(username)
@@ -56,3 +56,7 @@ function get_twitter_url(username, path) {
 function get_username(url) {
   return new URL(url).pathname.split("/")[1];
 }
+
+browser.runtime.onConnect.addListener((port) => {
+  browser.tabs.remove(port.sender.tab.id);
+});

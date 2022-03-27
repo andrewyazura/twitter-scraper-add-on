@@ -31,20 +31,25 @@ function get_user_elements() {
 
 function save_data(usernames) {
   browser.storage.local.get(username).then((result) => {
-    browser.storage.local.set({
-      [username]: {
-        ...result[username],
-        [type]: Array.from(usernames),
-      },
-    });
+    browser.storage.local
+      .set({
+        [username]: {
+          ...result[username],
+          [connection_type]: Array.from(usernames),
+        },
+      })
+      .then(() => {
+        browser.runtime.connect();
+      })
+      .catch(console.error);
   });
 }
 
-var type = window.location.pathname.split("/")[2];
+var connection_type = window.location.pathname.split("/")[2];
 var username = get_username(window.location);
 
 browser.storage.local.get(username).then((result) => {
-  let count = result[username][type];
+  let count = result[username][connection_type];
 
   wait_for_element("section.css-1dbjc4n").then((element) => {
     let usernames = new Set();
