@@ -1,3 +1,7 @@
+document
+  .querySelector("form")
+  .addEventListener("submit", start_background_script);
+
 function start_background_script() {
   let settings = {
     "connections-degree": parseInt(
@@ -17,7 +21,3 @@ function start_background_script() {
     })
     .catch(console.error);
 }
-
-document
-  .querySelector("form")
-  .addEventListener("submit", start_background_script);

@@ -1,3 +1,7 @@
+browser.runtime.onConnect.addListener((port) => {
+  browser.tabs.remove(port.sender.tab.id);
+});
+
 // this function is used by popup.js
 function export_current_user_data(settings) {
   browser.tabs
@@ -18,7 +22,7 @@ function export_current_user_data(settings) {
 }
 
 function export_user_data(user_tab, connection_types) {
-  let username = get_username(user_tab.url);
+  let username = get_url_part(user_tab.url);
 
   for (const type of connection_types) {
     if (type == "following" || type == "followers") {
@@ -49,14 +53,11 @@ function export_user_data(user_tab, connection_types) {
   }
 }
 
+function get_url_part(url, index) {
+  if (!index) index = 1;
+  return new URL(url).pathname.split("/")[index];
+}
+
 function get_twitter_url(username, path) {
   return `https://twitter.com/${username}/${path || ""}`;
 }
-
-function get_username(url) {
-  return new URL(url).pathname.split("/")[1];
-}
-
-browser.runtime.onConnect.addListener((port) => {
-  browser.tabs.remove(port.sender.tab.id);
-});
