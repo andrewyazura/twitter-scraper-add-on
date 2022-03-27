@@ -1,10 +1,20 @@
-function get_exports() {
-  let exports = [];
-  let inputs = document.getElementsByTagName("input");
+function get_params() {
+  let params = [];
+  let export_params = [];
 
-  for (const element of inputs) {
-    if (element.type == "checkbox" && element.checked) {
-      exports.push(element.name);
+  for (const param of document
+    .querySelector("div.params")
+    .querySelectorAll("input")) {
+    if (param.checked) {
+      params.push(param.name);
+    }
+  }
+
+  for (const export_param of document
+    .querySelector("div.export-params")
+    .querySelectorAll("input")) {
+    if (export_param.checked) {
+      export_params.push(export_param.name);
     }
   }
 
@@ -12,9 +22,9 @@ function get_exports() {
   browser.runtime
     .getBackgroundPage()
     .then((background_window) => {
-      background_window.export_user_data(exports);
+      background_window.export_current_user_data(params, export_params);
     })
     .catch(console.error);
 }
 
-document.getElementById("submit").addEventListener("click", get_exports);
+document.getElementById("submit").addEventListener("click", get_params);
