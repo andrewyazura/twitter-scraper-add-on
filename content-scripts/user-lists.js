@@ -1,8 +1,8 @@
-var connection_type = get_url_part(window.location, 2);
+var relation_type = get_url_part(window.location, 2);
 var username = get_url_part(window.location);
 
 browser.storage.local.get(username).then((result) => {
-  let count = result[username][connection_type];
+  let count = result[username][relation_type];
 
   wait_for_element("section.css-1dbjc4n").then((element) => {
     let usernames = new Set();
@@ -30,7 +30,7 @@ browser.storage.local.get(username).then((result) => {
             .set({
               [username]: {
                 ...result[username],
-                [connection_type]: Array.from(usernames),
+                [relation_type]: Array.from(usernames),
               },
             })
             .then(browser.runtime.connect)

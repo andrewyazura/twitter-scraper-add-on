@@ -20,13 +20,13 @@
         <h2 class="mt-3">Settings</h2>
 
         <div>
-          <label for="connections-degree" class="form-label">
-            Connections degree
+          <label for="relation-degree" class="form-label">
+            relation degree
           </label>
           <input
             type="number"
-            name="connections-degree"
-            id="connections-degree"
+            name="relation-degree"
+            id="relation-degree"
             class="form-control"
             value="10"
             min="1"
@@ -46,14 +46,14 @@
           </label>
         </div>
 
-        <h2 class="mt-3">Connection types</h2>
+        <h2 class="mt-3">Relation types</h2>
 
         <div class="form-check">
           <input
             type="checkbox"
             name="followers"
             id="followers"
-            class="form-check-input connection-type"
+            class="form-check-input relation-type"
             checked
           />
           <label for="followers" class="form-check-label">Followers</label>
@@ -64,7 +64,7 @@
             type="checkbox"
             name="following"
             id="following"
-            class="form-check-input connection-type"
+            class="form-check-input relation-type"
             checked
           />
           <label for="following" class="form-check-label">Following</label>
@@ -75,7 +75,7 @@
             type="checkbox"
             name="retweets"
             id="retweets"
-            class="form-check-input connection-type"
+            class="form-check-input relation-type"
             disabled
           />
           <label for="retweets" class="form-check-label">Retweets</label>

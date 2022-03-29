@@ -4,11 +4,11 @@ document
 
 function start_background_script() {
   let settings = {
-    "connections-degree": parseInt(
-      document.querySelector("input#connections-degree").value
+    "relation-degree": parseInt(
+      document.querySelector("input#relation-degree").value
     ),
-    "connection-types": [
-      ...document.querySelectorAll("input.connection-type:checked"),
+    "relation-types": [
+      ...document.querySelectorAll("input.relation-type:checked"),
     ].map((input) => input.name),
     "overwrite-cache": document.querySelector("input#overwrite-cache").checked,
   };

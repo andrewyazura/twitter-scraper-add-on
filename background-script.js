@@ -11,20 +11,20 @@ function export_current_user_data(settings) {
         browser.storage.local
           .clear()
           .then(() => {
-            export_user_data(tabs[0], settings["connection-types"]);
+            export_user_data(tabs[0], settings["relation-types"]);
           })
           .catch(console.error);
       } else {
-        export_user_data(tabs[0], settings["connection-types"]);
+        export_user_data(tabs[0], settings["relation-types"]);
       }
     })
     .catch(console.error);
 }
 
-function export_user_data(user_tab, connection_types) {
+function export_user_data(user_tab, relation_types) {
   let username = get_url_part(user_tab.url);
 
-  for (const type of connection_types) {
+  for (const type of relation_types) {
     if (type == "following" || type == "followers") {
       browser.storage.local
         .get(username)
