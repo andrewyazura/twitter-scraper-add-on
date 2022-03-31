@@ -3,54 +3,64 @@ browser.runtime.onConnect.addListener((port) => {
 });
 
 // this function is used by popup.js
-function export_current_user_data(settings) {
+function main(settings_) {
+  // have to make a deep copy of settings_ because it comes from popup.js script
+  let settings = JSON.parse(JSON.stringify(settings_));
+
+  if (settings.overwrite_cache) {
+    browser.storage.local
+      .set({
+        users: {},
+        relations: [],
+      })
+      .then(() => {
+        store_current_user_data(settings);
+      })
+      .catch(console.error);
+  } else {
+    store_current_user_data(settings);
+  }
+}
+
+function store_current_user_data(settings) {
   browser.tabs
     .query({ currentWindow: true, active: true })
     .then((tabs) => {
-      if (settings["overwrite-cache"]) {
-        browser.storage.local
-          .clear()
-          .then(() => {
-            export_user_data(tabs[0], settings["relation-types"]);
-          })
-          .catch(console.error);
-      } else {
-        export_user_data(tabs[0], settings["relation-types"]);
-      }
+      store_user_data(settings, tabs[0]);
     })
     .catch(console.error);
 }
 
-function export_user_data(user_tab, relation_types) {
+function store_user_data(settings, user_tab) {
   let username = get_url_part(user_tab.url);
 
-  for (const type of relation_types) {
-    if (type == "following" || type == "followers") {
-      browser.storage.local
-        .get(username)
-        .then((result) => {
-          if (result[username]) return;
+  browser.storage.local
+    .get("users")
+    .then((result) => {
+      if (result.users?.[username]) return;
 
-          browser.tabs.executeScript(user_tab.id, {
-            file: "/content-scripts/profile.js",
-          });
+      browser.tabs.executeScript(user_tab.id, {
+        file: "/content-scripts/profile.js",
+      });
 
+      for (const relation_type of settings.relation_types) {
+        if (relation_type == "following" || relation_type == "followers") {
           browser.tabs
-            .create({ url: get_twitter_url(username, type) })
+            .create({ url: get_twitter_url(username, relation_type) })
             .then((tab) => {
               browser.tabs.executeScript(tab.id, {
-                file: `/content-scripts/user-lists.js`,
+                file: "/content-scripts/user-lists.js",
               });
             })
             .catch(console.error);
-        })
-        .catch(console.error);
-    } else if (type == "retweets") {
-      console.warn("retweets are not implemented yet");
-    } else {
-      console.warn("unknown type:", type);
-    }
-  }
+        } else if (relation_type == "retweets") {
+          console.warn("retweets are not implemented yet");
+        } else {
+          console.warn("unknown relation type:", relation_type);
+        }
+      }
+    })
+    .catch(console.error);
 }
 
 function get_url_part(url, index) {
