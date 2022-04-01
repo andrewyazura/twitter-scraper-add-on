@@ -28,15 +28,10 @@ async function store_user_data(settings, user_tab) {
     file: "/content-scripts/profile.js",
   });
 
-  for (const relation_type of settings.relation_types) {
-    if (relation_type == "following" || relation_type == "followers") {
-      await parse_user_list(username, relation_type);
-    } else if (relation_type == "retweets") {
-      console.warn("retweets are not implemented yet");
-    } else {
-      console.warn("unknown relation type:", relation_type);
-    }
-  }
+  await Promise.all([
+    get_promise(settings, username, "following"),
+    get_promise(settings, username, "followers"),
+  ]);
 }
 
 function get_url_part(url, index) {
@@ -46,6 +41,12 @@ function get_url_part(url, index) {
 
 function get_twitter_url(username, path) {
   return `https://twitter.com/${username}/${path || ""}`;
+}
+
+function get_promise(settings, username, type) {
+  return settings.relation_types.includes(type)
+    ? parse_user_list(username, type)
+    : Promise.resolve();
 }
 
 async function parse_user_list(username, relation_type) {
