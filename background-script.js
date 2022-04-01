@@ -11,20 +11,48 @@ async function main(settings_) {
   }
 
   await store_current_user_data(settings);
+
+  for (let i = 0; i < settings.relation_degree; ++i) {
+    await store_empty_users_data(settings);
+  }
 }
 
 async function store_current_user_data(settings) {
   let tabs = await browser.tabs.query({ currentWindow: true, active: true });
-  await store_user_data(settings, tabs[0]);
+  await store_user_data(settings, get_url_part(tabs[0].url), tabs[0].id);
 }
 
-async function store_user_data(settings, user_tab) {
-  let username = get_url_part(user_tab.url);
+async function store_empty_users_data(settings) {
+  let empty_users = await get_empty_users();
 
-  let result = await browser.storage.local.get("users");
-  if (result.users?.[username]) return;
+  for (const username of empty_users) {
+    let tab = await browser.tabs.create({ url: get_twitter_url(username) });
+    await store_user_data(settings, username, tab.id);
+    await browser.tabs.remove(tab.id);
+  }
+}
 
-  await browser.tabs.executeScript(user_tab.id, {
+async function get_empty_users() {
+  let users = (await browser.storage.local.get("users")).users;
+  let empty_users = [];
+
+  for (const key in users) {
+    if (Object.keys(users[key]).length == 0) {
+      empty_users.push(key);
+    }
+  }
+
+  return empty_users;
+}
+
+async function store_user_data(settings, username, tab_id) {
+  let users = await browser.storage.local.get("users");
+  let user_data = users.users[username];
+  if (user_data && Object.keys(user_data).length != 0) {
+    return;
+  }
+
+  await browser.tabs.executeScript(tab_id, {
     file: "/content-scripts/profile.js",
   });
 
