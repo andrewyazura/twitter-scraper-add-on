@@ -1,6 +1,5 @@
-var username = get_username(window.location);
-
 (async () => {
+  let username = get_username(window.location);
   let result = await browser.storage.local.get("users");
 
   browser.storage.local.set({

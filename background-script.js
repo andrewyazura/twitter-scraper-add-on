@@ -30,15 +30,7 @@ async function store_user_data(settings, user_tab) {
 
   for (const relation_type of settings.relation_types) {
     if (relation_type == "following" || relation_type == "followers") {
-      let tab = await browser.tabs.create({
-        url: get_twitter_url(username, relation_type),
-      });
-
-      await browser.tabs.executeScript(tab.id, {
-        file: "/content-scripts/user-lists.js",
-      });
-
-      await browser.tabs.remove(tab.id);
+      await parse_user_list(username, relation_type);
     } else if (relation_type == "retweets") {
       console.warn("retweets are not implemented yet");
     } else {
@@ -54,4 +46,16 @@ function get_url_part(url, index) {
 
 function get_twitter_url(username, path) {
   return `https://twitter.com/${username}/${path || ""}`;
+}
+
+async function parse_user_list(username, relation_type) {
+  let tab = await browser.tabs.create({
+    url: get_twitter_url(username, relation_type),
+  });
+
+  await browser.tabs.executeScript(tab.id, {
+    file: "/content-scripts/user-lists.js",
+  });
+
+  await browser.tabs.remove(tab.id);
 }

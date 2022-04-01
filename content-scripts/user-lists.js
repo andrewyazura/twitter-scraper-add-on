@@ -7,7 +7,7 @@ var username = get_url_part(window.location);
 
   await wait_for_element("section.css-1dbjc4n");
 
-  // promise is required to wait for the interval to finish
+  // promise is required to wait for the interval to be cleared
   await new Promise((resolve) => {
     let usernames = new Set();
 
@@ -27,11 +27,12 @@ var username = get_url_part(window.location);
       window.scrollTo(0, document.body.scrollHeight);
 
       if (usernames.size >= count) {
+        // clear interval and resolve promise
         clearInterval(interval);
         await store_connections(usernames);
-        resolve(); // resolve promise when interval is cleared
+        resolve();
       }
-    }, 1000);
+    }, 800);
   });
 })();
 
@@ -86,7 +87,7 @@ async function store_connections(usernames_) {
   await browser.storage.local.set({
     users: {
       ...new_users,
-      ...users.users, // existing nodes should overwrite new ones
+      ...users.users, // existing nodes overwrite new ones
     },
   });
 }
