@@ -1,13 +1,17 @@
 var relation_type = get_url_part(window.location, 2);
 var username = get_url_part(window.location);
 
-browser.storage.local.get("users").then((result) => {
-  let count = result.users[username][relation_type];
+(async () => {
+  let users = await browser.storage.local.get("users");
+  let count = users.users[username][relation_type];
 
-  wait_for_element("section.css-1dbjc4n").then((element) => {
+  await wait_for_element("section.css-1dbjc4n");
+
+  // promise is required to wait for the interval to finish
+  await new Promise((resolve) => {
     let usernames = new Set();
 
-    let interval = setInterval(() => {
+    let interval = setInterval(async () => {
       let user_elements = document
         .querySelector("section.css-1dbjc4n")
         .querySelector("div.css-1dbjc4n")
@@ -24,11 +28,12 @@ browser.storage.local.get("users").then((result) => {
 
       if (usernames.size >= count) {
         clearInterval(interval);
-        store_connections(usernames);
+        await store_connections(usernames);
+        resolve(); // resolve promise when interval is cleared
       }
     }, 1000);
   });
-});
+})();
 
 function get_url_part(url, index) {
   if (!index) index = 1;
@@ -55,7 +60,7 @@ function wait_for_element(selector) {
   });
 }
 
-function store_connections(usernames_) {
+async function store_connections(usernames_) {
   let usernames = Array.from(usernames_);
 
   let new_connections = usernames.map((element) => {
@@ -72,21 +77,16 @@ function store_connections(usernames_) {
     })
   );
 
-  browser.storage.local.get("relations").then((result) => {
-    browser.storage.local
-      .set({
-        relations: [...result.relations, ...new_connections],
-      })
-      .then(browser.runtime.connect)
-      .catch(console.error);
+  let relations = await browser.storage.local.get("relations");
+  await browser.storage.local.set({
+    relations: [...relations.relations, ...new_connections],
   });
 
-  browser.storage.local.get("users").then((result) => {
-    browser.storage.local.set({
-      users: {
-        ...new_users,
-        ...result.users, // existing nodes should overwrite new ones
-      },
-    });
+  let users = await browser.storage.local.get("users");
+  await browser.storage.local.set({
+    users: {
+      ...new_users,
+      ...users.users, // existing nodes should overwrite new ones
+    },
   });
 }

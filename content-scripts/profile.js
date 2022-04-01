@@ -1,6 +1,8 @@
 var username = get_username(window.location);
 
-browser.storage.local.get("users").then((result) => {
+(async () => {
+  let result = await browser.storage.local.get("users");
+
   browser.storage.local.set({
     users: {
       ...result.users,
@@ -10,7 +12,7 @@ browser.storage.local.get("users").then((result) => {
       },
     },
   });
-});
+})();
 
 function get_username(url) {
   return new URL(url).pathname.split("/")[1];

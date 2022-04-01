@@ -1,10 +1,12 @@
 document
   .querySelector("form")
-  .addEventListener("submit", start_background_script);
+  .addEventListener("submit", () => start_background_script());
 
-document.querySelector("button#export").addEventListener("click", export_data);
+document
+  .querySelector("button#export")
+  .addEventListener("click", () => export_data());
 
-function start_background_script() {
+async function start_background_script() {
   let settings = {
     relation_degree: parseInt(
       document.querySelector("input#relation-degree").value
@@ -16,21 +18,13 @@ function start_background_script() {
   };
 
   // access window object of background.js script and execute main function
-  browser.runtime
-    .getBackgroundPage()
-    .then((background_window) => {
-      background_window.main(settings);
-    })
-    .catch(console.error);
+  let background_window = await browser.runtime.getBackgroundPage();
+  background_window.main(settings);
 }
 
-function export_data() {
-  browser.tabs
-    .create({ url: "https://twitter.com" })
-    .then((tab) => {
-      browser.tabs.executeScript(tab.id, {
-        file: "/content-scripts/export.js",
-      });
-    })
-    .catch(console.error);
+async function export_data() {
+  let tab = await browser.tabs.create({ url: "https://twitter.com" });
+  browser.tabs.executeScript(tab.id, {
+    file: "/content-scripts/export.js",
+  });
 }
