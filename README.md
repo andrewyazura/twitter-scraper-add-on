@@ -28,7 +28,7 @@ To do this press **Reload** on the same page.
 On WSL you need to export your files from WSL filesystem to Windows filesystem, as you can't select add-on's `manifest.json` from WSL filesystem.
 
 There is a `wslexport.sh` script that hepls with exporting files.
-Use `./wslexport /path/to/export`. For example: `/mnt/c/Users/<username>/Documents`.
+Use `./wslexport /path/to/export`. For example: `./wslexport.sh /mnt/c/Users/<username>/Documents`.
 
 Alternatively, set `ADDONEXPORTPATH` environment variable to path where you want to export the files to. Then use `./wslexport.sh`.
 
