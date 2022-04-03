@@ -23,6 +23,9 @@ To do this press **Reload** on the same page.
 3. Add a profile named `twitter-scraper`
 4. Run `Launch WebExtension` config in VS Code
 
+On the first run you will have to login with your Twitter account.
+Session will be saved in `twitter-scraper` profile and will not interfere with your default Firefox profile.
+
 ### For WSL users
 
 On WSL you need to export your files from WSL filesystem to Windows filesystem, as you can't select add-on's `manifest.json` from WSL filesystem.
