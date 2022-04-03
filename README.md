@@ -4,26 +4,28 @@
 
 ## Development
 
-## Adding add-on to Firefox
+### Adding add-on to Firefox
 
 1. In your Firefox browser go to `about:debugging`
 2. Click **This Firefox**
 3. Press **Load Temporary Add-on** button
 4. Select `twitter-scraper/manifest.json` in file explorer
 
-### Reloading extension
+You have to reload the add-on after making changes to it.
+To do this press **Reload** on the same page.
 
-After making changes to the add-on you have to reload it.
+### Auto-reload
 
-1. In your Firefox browser go to `about:debugging`
-2. Click **This Firefox**
-3. Find add-on in the list
-4. Press **Reload**
+> This method doesn't work for WSL users
+
+1. Install [Debugger for Firefox](https://marketplace.visualstudio.com/items?itemName=firefox-devtools.vscode-firefox-debug) extension in VS Code
+2. In your Firefox browser go to `about:profiles`
+3. Add a profile named `twitter-scraper`
+4. Run `Launch WebExtension` config in VS Code
 
 ### For WSL users
 
-On WSL you need to export your files from WSL filesystem to Windows filesystem,
-as you can't select add-on's `manifest.json` from WSL filesystem.
+On WSL you need to export your files from WSL filesystem to Windows filesystem, as you can't select add-on's `manifest.json` from WSL filesystem.
 
 There is a `wslexport.sh` script that hepls with exporting files.
 Use `./wslexport /path/to/export`. For example: `/mnt/c/Users/<username>/Documents`.
@@ -34,9 +36,9 @@ Alternatively, set `ADDONEXPORTPATH` environment variable to path where you want
 
 You can use `nodemon` to automatically execute `wslexport.sh` script on file changes:
 
-`npx nodemon --watch . --ext js,json,html,css --exec ./wslexport.sh`
+`npx nodemon --watch . --ext js,json,html --exec ./wslexport.sh`
 
-### Formatting
+## Formatting
 
 Use [**Prettier**](https://prettier.io/) for formatting your code.
 It is available as a VS Code extension as well.
