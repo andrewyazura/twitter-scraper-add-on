@@ -42,11 +42,17 @@ function get_username(url) {
 }
 
 function extract_number(username, relation_type) {
-  return parseInt(
-    document
-      .querySelector(`a[href='/${username}/${relation_type}']`)
-      .querySelector("span")
-      .querySelector("span")
-      .innerHTML.replace(/,/g, "")
-  );
+  try {
+    return parseInt(
+      document
+        .querySelector(`a[href='/${username}/${relation_type}']`)
+        .querySelector("span")
+        .querySelector("span")
+        .innerHTML.replace(/,/g, "")
+        .replace(/K/g, "000")
+        .replace(/M/g, "000000")
+    );
+  } catch {
+    return -1;
+  }
 }

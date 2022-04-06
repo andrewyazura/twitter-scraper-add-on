@@ -6,7 +6,7 @@ var username = get_url_part(window.location);
 (async () => {
   let users = await browser.storage.local.get("users");
   let max_size = users.users[username][relation_type];
-  if (max_size == 0) return;
+  if (max_size <= 0) return;
 
   await wait_for_element("section.css-1dbjc4n");
 
@@ -39,6 +39,7 @@ var username = get_url_part(window.location);
         // if the number of usernames is greater than or equal to the expected amount,
         // or the number of usernames has not changed for the last history_size iterations
         clearInterval(interval);
+        usernames = Array.from(usernames).slice(0, max_size);
         await store_connections(usernames);
         resolve();
       }
@@ -74,9 +75,7 @@ function wait_for_element(selector) {
   });
 }
 
-async function store_connections(usernames_) {
-  let usernames = Array.from(usernames_);
-
+async function store_connections(usernames) {
   let new_connections = usernames.map((element) => {
     if (relation_type == "followers") {
       return { source: element, target: username };
