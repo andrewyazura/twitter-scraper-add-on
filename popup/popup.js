@@ -8,8 +8,11 @@ document
 
 async function start_background_script() {
   let settings = {
-    relation_degree: parseInt(
-      document.querySelector("input#relation-degree").value
+    max_graph_depth: parseInt(
+      document.querySelector("input#max-graph-depth").value
+    ),
+    max_list_size: parseInt(
+      document.querySelector("input#max-list-size").value
     ),
     relation_types: [
       ...document.querySelectorAll("input.relation-type:checked"),

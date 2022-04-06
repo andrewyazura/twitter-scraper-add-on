@@ -3,13 +3,15 @@
 
   let username = get_username(window.location);
   let users = await browser.storage.local.get("users");
+  let settings = await browser.storage.local.get("settings");
+  const max_size = settings.settings.max_list_size;
 
-  browser.storage.local.set({
+  await browser.storage.local.set({
     users: {
       ...users.users,
       [username]: {
-        followers: extract_number(username, "followers"),
-        following: extract_number(username, "following"),
+        followers: Math.min(max_size, extract_number(username, "followers")),
+        following: Math.min(max_size, extract_number(username, "following")),
       },
     },
   });

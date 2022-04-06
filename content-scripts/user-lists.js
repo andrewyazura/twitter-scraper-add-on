@@ -6,6 +6,7 @@ var username = get_url_part(window.location);
 (async () => {
   let users = await browser.storage.local.get("users");
   let max_size = users.users[username][relation_type];
+  if (max_size == 0) return;
 
   await wait_for_element("section.css-1dbjc4n");
 

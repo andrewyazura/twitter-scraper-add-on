@@ -2,6 +2,7 @@
 async function main(settings_) {
   // have to make a deep copy of settings_ because it comes from popup.js script
   let settings = JSON.parse(JSON.stringify(settings_));
+  await browser.storage.local.set({ settings });
 
   if (settings.overwrite_cache) {
     await browser.storage.local.set({
@@ -12,7 +13,7 @@ async function main(settings_) {
 
   await store_current_user_data(settings);
 
-  for (let i = 0; i < settings.relation_degree; ++i) {
+  for (let i = 0; i < settings.max_graph_depth; ++i) {
     await store_empty_users_data(settings);
   }
 }
