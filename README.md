@@ -21,7 +21,8 @@ To do this press **Reload** on the same page.
 1. Install [Debugger for Firefox](https://marketplace.visualstudio.com/items?itemName=firefox-devtools.vscode-firefox-debug) extension in VS Code
 2. In your Firefox browser go to `about:profiles`
 3. Add a profile named `twitter-scraper`
-4. Run `Launch WebExtension` config in VS Code
+4. Set you previous default profile as current default
+5. Run `Launch WebExtension` config in VS Code
 
 On the first run you will have to login with your Twitter account.
 Session will be saved in `twitter-scraper` profile and will not interfere with your default Firefox profile.

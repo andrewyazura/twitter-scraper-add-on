@@ -1,15 +1,18 @@
+const history_size = -3;
+
 var relation_type = get_url_part(window.location, 2);
 var username = get_url_part(window.location);
 
 (async () => {
   let users = await browser.storage.local.get("users");
-  let count = users.users[username][relation_type];
+  let max_size = users.users[username][relation_type];
 
   await wait_for_element("section.css-1dbjc4n");
 
   // promise is required to wait for the interval to be cleared
   await new Promise((resolve) => {
     let usernames = new Set();
+    let size_history = [-2, -1];
 
     let interval = setInterval(async () => {
       let user_elements = document
@@ -24,14 +27,23 @@ var username = get_url_part(window.location);
         usernames.add(get_url_part(link.href));
       }
 
+      console.debug(usernames.size, "/", max_size);
       window.scrollTo(0, document.body.scrollHeight);
 
-      if (usernames.size >= count) {
-        // clear interval and resolve promise
+      if (
+        usernames.size >= max_size ||
+        size_history.slice(history_size).every((v, i, a) => v == a[0])
+      ) {
+        // stop the interval and resolve
+        // if the number of usernames is greater than or equal to the expected amount,
+        // or the number of usernames has not changed for the last history_size iterations
         clearInterval(interval);
         await store_connections(usernames);
         resolve();
       }
+
+      size_history.push(usernames.size);
+      size_history = size_history.slice(history_size);
     }, 800);
   });
 })();
