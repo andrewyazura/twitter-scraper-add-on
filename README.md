@@ -2,6 +2,8 @@
 
 # Twitter scraper
 
+> ℹ️ Due to recent updates of Twitter's policy, the bot is now virtually impossible to implement. I've given up on it a long time ago, anyway
+
 ## Development
 
 ### Adding add-on to Firefox
